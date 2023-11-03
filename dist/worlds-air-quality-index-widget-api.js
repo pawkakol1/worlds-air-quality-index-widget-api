@@ -14,6 +14,7 @@ function loadAqiFeedScript(w,d,t,f) {
   };
   window[`loadAqiFeedScript`] = true;
 }
+loadAqiFeedScript(window, document, 'script', '_aqiFeed');
 
 /**
  * Hassio frontend custom worlds-air-quality-index-widget-api
@@ -25,7 +26,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
   }
 
   setConfig(config) {
-    loadAqiFeedScript(window, document, 'script', '_aqiFeed');
+    //loadAqiFeedScript(window, document, 'script', '_aqiFeed');
     const root = this.shadowRoot;
     if (root.lastChild) root.removeChild(root.lastChild);
 
@@ -35,7 +36,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
 
   set hass(hass) {
     const config = this._config;
-    loadAqiFeedScript(window, document, 'script', '_aqiFeed');
+    //loadAqiFeedScript(window, document, 'script', '_aqiFeed');
 
     try{
       const root = this.shadowRoot;
@@ -62,7 +63,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
     } catch(err){
       console.trace();
       console.log('waiting for AQI feed script load');
-      loadAqiFeedScript(window, document, 'script', '_aqiFeed');
+      //loadAqiFeedScript(window, document, 'script', '_aqiFeed');
     }
   }
 
