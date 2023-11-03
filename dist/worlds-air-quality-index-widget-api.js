@@ -11,6 +11,7 @@ function loadAqiFeedScript(w,d,t,f) {
     L.src = 'https://feed.aqicn.org/feed/' + (c[n].city) + '/' + (c[n].lang || '') + '/feed.v1.js?n=' + n + k;
     e.parentNode.insertBefore(L, e);
   };
+  window[`loadAqiFeedScript`] = true;
 }
 
 /**
@@ -39,11 +40,13 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
       const root = this.shadowRoot;
       this._hass = hass;
       const card = document.createElement('ha-card');
-      this.content = document.createElement('div');
-      this.content.setAttribute("id", "city-aqi-container");
-      card.appendChild(this.content);
-      root.appendChild(card);
-      _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl", display: "<center>%cityname<br>%aqi<br><small>%date</small></center>"});
+      if(!this.content && window[`loadAqiFeedScript`]) {
+        this.content = document.createElement('div');
+        this.content.setAttribute("id", "city-aqi-container");
+        card.appendChild(this.content);
+        root.appendChild(card);
+        _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl", display: "<center>%cityname<br>%aqi<br><small>%date</small></center>"});
+      }
     } catch(err){
       console.log('waiting for AQI feed script load');
       loadAqiFeedScript(window, document, 'script', '_aqiFeed');
