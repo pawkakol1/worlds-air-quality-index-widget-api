@@ -48,6 +48,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
         _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl", display: "<center>%cityname<br>%aqi<br><small>%date</small></center>"});
       }
     } catch(err){
+      console.trace();
       console.log('waiting for AQI feed script load');
       loadAqiFeedScript(window, document, 'script', '_aqiFeed');
     }
