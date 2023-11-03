@@ -41,11 +41,22 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
       this._hass = hass;
       const card = document.createElement('ha-card');
       if(!this.content && window[`loadAqiFeedScript`]) {
+        console.log('start!');
         this.content = document.createElement('div');
+        console.log('this.content:');
+        console.log(this.content);
         this.content.setAttribute("id", "city-aqi-container");
+        console.log('this.content:');
+        console.log(this.content);
         card.appendChild(this.content);
+        console.log('card:');
+        console.log(card);
         root.appendChild(card);
+        console.log('root:');
+        console.log(root);
         _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl", display: "<center>%cityname<br>%aqi<br><small>%date</small></center>"});
+        console.log('_aqiFeed:');
+        console.log('finish!');
       }
     } catch(err){
       console.trace();
