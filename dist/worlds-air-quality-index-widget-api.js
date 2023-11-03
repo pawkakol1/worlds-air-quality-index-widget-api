@@ -14,7 +14,6 @@ function loadAqiFeedScript(w,d,t,f) {
   };
   window[`loadAqiFeedScript`] = true;
 }
-loadAqiFeedScript(window, document, 'script', '_aqiFeed');
 
 /**
  * Hassio frontend custom worlds-air-quality-index-widget-api
@@ -23,6 +22,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
+    loadAqiFeedScript(window, document, 'script', '_aqiFeed');
   }
 
   setConfig(config) {
