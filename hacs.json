@@ -1,0 +1,7 @@
+{
+  "name": "World's Air Quality Index widget API",
+  "description" : "WAQI widget API card",
+  "content_in_root": false,
+  "filename": "worlds-air-quality-index-widget-api.js",
+  "render_readme" : true
+}
