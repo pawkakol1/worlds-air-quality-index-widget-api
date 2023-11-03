@@ -54,7 +54,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
         root.appendChild(card);
         console.log('root:');
         console.log(root);
-        _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl", display: "<center>%cityname<br>%aqi<br><small>%date</small></center>"});
+        _aqiFeed({container: "city-aqi-container", city: "london", lang: "pl"});
         console.log('_aqiFeed:');
         console.log('finish!');
       }
