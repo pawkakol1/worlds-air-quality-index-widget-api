@@ -1,7 +1,7 @@
 /**
  * Script downloaded from https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/
  */
-function loadAirQualityWidget(w,d,t,f) {
+function loadAqiFeedScript(w,d,t,f) {
   w[f] = w[f] || function(c,k,n) {
     s = w[f], k = s['k'] = (s['k'] || (k ? ('&k=' + k) : ''));
     s['c'] = c = (c instanceof Array) ? c : [c];
