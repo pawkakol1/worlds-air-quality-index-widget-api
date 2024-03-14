@@ -82,7 +82,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
               console.log('child removed!');
             }
           });*/
-          const config = {childList: true};
+          /*const config = {childList: true};
           const callback = (mutationList, observer) => {
             for (const mutation of mutationList) {
               if (mutation.type === "childList") {
@@ -97,14 +97,14 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
             }
           };
           const observer = new MutationObserver(callback);
-          observer.observe(this.temporaryContent, config);
+          observer.observe(this.temporaryContent, config);*/
 
           console.log('_aqiFeed!');
           _aqiFeed({container:"city-aqi-container", city:"poland/gdansk/gdansk-srodmiescie/", lang:"pl", display:"<center>%details</center>"}); 
           console.log('_aqiFeed done!');
           console.log('finish!');
           console.log(this.temporaryContent);
-          console.log("Delayed for 0,05 second.");
+          console.log("Delayed for 0,1 second.");
           setTimeout(() => {
             console.log("Done!");
             var content = document.getElementById('city-aqi-container').innerHTML;
@@ -112,7 +112,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
             console.log(this.content);
             bodyRoot.removeChild(this.temporaryContent);
             console.log('child removed!');
-          }, 50);
+          }, 100);
           card.appendChild(this.content);
           root.appendChild(card);
         }
