@@ -71,11 +71,11 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
         this.elementsSet = true;
         console.log("elements creating done");
         if(window[`scriptLoaded_AqiFeedScript`]) {
-          console.log(this._config);
+          console.log(config);
           this.content = document.createElement('div');
           this.content.setAttribute("id", "waqi-container");
           console.log('start!');
-          const config = {childList: true};
+          const observerConfig = {childList: true};
           const callback = (mutationList, observer) => {
             for (const mutation of mutationList) {
               if (mutation.type === "childList") {
@@ -90,10 +90,10 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
             }
           };
           const observer = new MutationObserver(callback);
-          observer.observe(this.temporaryContent, config);
+          observer.observe(this.temporaryContent, observerConfig);
 
           console.log('_aqiFeed!');
-          _aqiFeed({container:"city-aqi-container", city:"poland/gdansk/gdansk-srodmiescie/", lang:"pl", display:"<center>%details</center>"}); 
+          _aqiFeed({container:"city-aqi-container", city: config.city, lang: config.lang, display: config.display}); 
           console.log('_aqiFeed done!');
           card.appendChild(this.content);
           root.appendChild(card);
