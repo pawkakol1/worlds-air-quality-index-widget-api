@@ -74,36 +74,47 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
           this.content = document.createElement('div');
           this.content.setAttribute("id", "waqi-container");
           console.log('start!');
-          document.addEventListener("DOMNodeInsertedIntoDocument", function(event) {
+          /*document.addEventListener("DOMNodeInsertedIntoDocument", function(event) {
             var content = document.getElementById('city-aqi-container').innerHTML;
             if(content != "") {
               this.content.innerHTML = content;
               bodyRoot.removeChild(this.temporaryContent);
               console.log('child removed!');
             }
-          });
+          });*/
+          const config = {childList: true};
+          const callback = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+              if (mutation.type === "childList") {
+                console.log("A child node has been added or removed.");
+                var content = document.getElementById('city-aqi-container').innerHTML;
+                console.log(content);
+                this.content.innerHTML = content;
+                bodyRoot.removeChild(this.temporaryContent);
+                console.log('child removed!');
+                observer.disconnect();
+              }
+            }
+          };
+          const observer = new MutationObserver(callback);
+          observer.observe(this.temporaryContent, config);
+
           console.log('_aqiFeed!');
           _aqiFeed({container:"city-aqi-container", city:"poland/gdansk/gdansk-srodmiescie/", lang:"pl", display:"<center>%details</center>"}); 
           console.log('_aqiFeed done!');
           console.log('finish!');
           console.log(this.temporaryContent);
-          console.log("Delayed for 0,5 second.");
-          /*setTimeout(() => {
+          console.log("Delayed for 0,05 second.");
+          setTimeout(() => {
             console.log("Done!");
             var content = document.getElementById('city-aqi-container').innerHTML;
             this.content.innerHTML = content;
             console.log(this.content);
             bodyRoot.removeChild(this.temporaryContent);
             console.log('child removed!');
-          }, 500);*/
-          
-          //bodyRoot.removeChild(this.content);
-          //console.log('child removed!');
-          //console.log(this.content);
+          }, 50);
           card.appendChild(this.content);
           root.appendChild(card);
-          //console.log('content added to root->card!');
-          //console.log(this.content);
         }
       }
     } catch(err){
