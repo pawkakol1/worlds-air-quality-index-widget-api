@@ -79,7 +79,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
           const observer = new MutationObserver(callback);
           observer.observe(this.temporaryContent, observerConfig);
           if(config.city != undefined || config.cities != undefined) {
-            var parameters = {container:"city-aqi-container"};
+            var parameters = {container:"city-aqi-container", callback: ""};
             if(config.lang != undefined)
               parameters["lang"] = config.lang;
             if(config.display != undefined)
