@@ -8,7 +8,16 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
-    this.elementsSet = false;
+  }
+
+  callbackMutationObserver(mutationList, index) {
+    for (const mutation of mutationList) {
+      if (mutation.type === "childList") {
+        this.content[index].innerHTML = document.getElementById(this.body_container_name[index]).innerHTML;//city-aqi-container
+        bodyRoot.removeChild(this.temporaryContent[index]);
+        observer.disconnect();
+      }
+    }
   }
 
   /**
@@ -20,15 +29,38 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
     if (root.lastChild) 
       root.removeChild(root.lastChild);
     const cardConfig = Object.assign({}, config);
-    this._config = cardConfig
+    this.content = new Array();
+    this.temporaryContent = new Array();
+    this.observerConfig = new Array();
+    this.observer = new Array();
+    this.parameters = new Array();
+    this._config = cardConfig;
+    if(config.cities != undefined) {
+      //if there is only one city defined, then convert value to one element Array
+      if(!Array.isArray(config.cities)) {
+        var city = config.cities;
+        this._config.cities = new Array();
+        this._config.cities.push(city);
+      }
+      //generate names of containers and scripts
+      this.body_container_name = new Array();
+      this.script_name = new Array();
+      var converted_city;
+      for(var i = 0; i < this._config.cities.lenght; i++) {
+        converted_city = this._config.cities[i].replace(/[\/]/gm, '-');
+        this.body_container_name.push(converted_city + "-aqi-container");
+        this.card_container_name.push(converted_city + "-waqi-container");
+        this.script_name.push(converted_city + "_AqiFeedScript");
+      }
+    }
   }
 
   /**
    * Script downloaded from https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/
    * adjusted to work with worlds-air-quaility
    */
-  loadAqiFeedScript() {
-    if(window[`scriptLoaded_AqiFeedScript`]){
+  loadAqiFeedScript(scriptName) {
+    if(window[scriptName]){
       return;
     }
     window['_aqiFeed'] = window['_aqiFeed'] || function(c,k,n) {
@@ -41,7 +73,7 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
       L.src = 'https://feed.aqicn.org/feed/' + (c[n].city) + '/' + (c[n].lang || '') + '/feed.v1.js?n=' + n + k;
       e.appendChild(L);
     };
-    window[`scriptLoaded_AqiFeedScript`] = true;
+    window[scriptName] = true;
   }
 
   /**
@@ -54,59 +86,47 @@ class WorldsAirQualityIndexWidgetApi extends HTMLElement {
     const bodyRoot = document.getElementsByTagName('body')[0];
     try{
       this._hass = hass;
-      if(!this.content) {
-        const card = document.createElement('ha-card');
-        this.temporaryContent = document.createElement('div');
-        this.temporaryContent.setAttribute("id", "city-aqi-container");
-        bodyRoot.appendChild(this.temporaryContent);
-        if(!window[`scriptLoaded_AqiFeedScript`])
-          this.loadAqiFeedScript();
-        this.elementsSet = true;
-        if(window[`scriptLoaded_AqiFeedScript`]) {
-          console.log(config);
-          this.content = document.createElement('div');
-          this.content.setAttribute("id", "waqi-container");
-          const observerConfig = {childList: true};
-          const callback = (mutationList, observer) => {
-            for (const mutation of mutationList) {
-              if (mutation.type === "childList") {
-                this.content.innerHTML = document.getElementById('city-aqi-container').innerHTML;
-                bodyRoot.removeChild(this.temporaryContent);
-                observer.disconnect();
-              }
-            }
-          };
-          const observer = new MutationObserver(callback);
-          observer.observe(this.temporaryContent, observerConfig);
-          if(config.city != undefined || config.cities != undefined) {
-            var parameters = {container:"city-aqi-container", callback: ""};
-            if(config.lang != undefined)
-              parameters["lang"] = config.lang;
-            if(config.display != undefined)
-              parameters["display"] = config.display;
-            
+      for(var i = 0; i < this._config.cities.lenght; i++) {
+        if(this.content.length < (i + 1)) {
+          const card = document.createElement('ha-card');
+          this.temporaryContent.push(document.createElement('div'));
+          this.temporaryContent[i].setAttribute("id", this.body_container_name[i]);//city-aqi-container
+          bodyRoot.appendChild(this.temporaryContent[i]);
+          if(!window[this.script_name[i]])
+            this.loadAqiFeedScript(this.script_name[i]);
+          if(window[this.script_name[i]]) {
+            this.content.push(document.createElement('div'));
+            this.content[i].setAttribute("id", card_container_name[i]);
+
+            //set MutationObserver
+            this.observerConfig.push({childList: true});
+            this.observer.push(new MutationObserver(mutationList => {
+              callbackMutationObserver(mutationList, i)
+            }));
+            this.observer[i].observe(this.temporaryContent[i], this.observerConfig[i]);
+
             if(config.cities != undefined) {
-              for(var i = 0; i < config.cities.lenght; i++) {
-                parameters["city"] = config.cities[i];
-                _aqiFeed(parameters); 
-              }
+              this.parameters[i] = {container:this.body_container_name[i], callback: ""};//city-aqi-container
+              if(config.lang != undefined)
+                this.parameters[i]["lang"] = config.lang;
+              if(config.display != undefined)
+                this.parameters[i]["display"] = config.display;
+              
+              this.parameters[i]["city"] = config.cities[i];
+              _aqiFeed(this.parameters[i]); 
             }
-            else {
-              parameters["city"] = config.city;
-              _aqiFeed(parameters); 
-            }
+            else 
+              throw new Error('The minimum parameter is singe "city" or "cities" array');
+            card.appendChild(this.content[i]);
+            root.appendChild(card);
           }
-          else 
-            throw new Error('The minimum parameter is singe "city" or "cities" array');
-          card.appendChild(this.content);
-          root.appendChild(card);
         }
       }
     } catch(err){
       console.trace();
       console.log(err);
       console.log('waiting for AQI feed script load');
-      this.loadAqiFeedScript();
+      this.loadAqiFeedScript(this.temporaryContent[i]);
     }
   }
 
