@@ -4,7 +4,7 @@ A Home Assistant custom Fronted for World's Air Quality Index widget API (waqi.i
 
 ![Widget](https://github.com/pawkakol1/worlds-air-quality-index-widget-api/blob/main/images/london-AQI_widget_API.png)
 
-Fronted supports widget described in this link: [](https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/)
+Fronted supports widget described in this link: [https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/](https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/)
 
 To add it into Lovelace dashoard, you need to select:
 - add card,
@@ -73,4 +73,4 @@ Display determines method of widget printing, and it affects appearance of the w
 - `%attribution` for the AQI data attribution ( eg Beijing Environmental Protection Monitoring Center)
 - `%details` for the full AQI details (the content of the popup displayed when moving the mouse over the AQI value).
 
-For examples of the usage you can go to this link: [](https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/)
+For examples of the usage you can go to this link: [https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/](https://aqicn.org/faq/2015-07-28/air-quality-widget-new-improved-feed/en/)
